@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Short-Form Content Generator</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-video"></i>
+                    <h1>AI Shorts Generator</h1>
+                </div>
+                <div class="header-info">
+                    <span class="version">v2.0</span>
+                    <div class="connection-status" id="connectionStatus">
+                        <i class="fas fa-circle"></i>
+                        <span>Connecting...</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Upload Section -->
+            <section class="upload-section" id="uploadSection">
+                <div class="upload-container">
+                    <div class="upload-area" id="uploadArea">
+                        <div class="upload-content">
+                            <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                            <h2>Upload Your Video</h2>
+                            <p>Drag and drop your video file here, or click to browse</p>
+                            <div class="supported-formats">
+                                <span>Supported: MP4, AVI, MOV, MKV, WMV, FLV, WebM</span>
+                            </div>
+                            <input type="file" id="videoInput" accept="video/*" hidden>
+                            <button class="upload-btn" id="uploadBtn">
+                                <i class="fas fa-folder-open"></i>
+                                Choose Video
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Settings Section -->
+            <section class="settings-section" id="settingsSection" style="display: none;">
+                <div class="settings-container">
+                    <h2><i class="fas fa-cog"></i> Generation Settings</h2>
+                    
+                    <div class="uploaded-file-info" id="fileInfo">
+                        <!-- File info will be populated by JavaScript -->
+                    </div>
+
+                    <div class="settings-grid">
+                        <div class="setting-item">
+                            <label for="maxShorts">Max Shorts to Generate</label>
+                            <select id="maxShorts">
+                                <option value="1">1 Short</option>
+                                <option value="2">2 Shorts</option>
+                                <option value="3" selected>3 Shorts</option>
+                                <option value="4">4 Shorts</option>
+                                <option value="5">5 Shorts</option>
+                                <option value="10">10 Shorts</option>
+                            </select>
+                        </div>
+
+                        <div class="setting-item">
+                            <label for="useGPT">AI Content Analysis</label>
+                            <div class="toggle-switch">
+                                <input type="checkbox" id="useGPT" checked>
+                                <span class="slider"></span>
+                            </div>
+                            <small>Enhanced content analysis with GPT-4</small>
+                        </div>
+                    </div>
+
+                    <div class="action-buttons">
+                        <button class="btn-secondary" id="backBtn">
+                            <i class="fas fa-arrow-left"></i>
+                            Back to Upload
+                        </button>
+                        <button class="btn-primary" id="generateBtn">
+                            <i class="fas fa-magic"></i>
+                            Generate Shorts
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Progress Section -->
+            <section class="progress-section" id="progressSection" style="display: none;">
+                <div class="progress-container">
+                    <h2><i class="fas fa-spinner fa-spin"></i> Generating Your Shorts</h2>
+                    
+                    <div class="progress-bar-container">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                        </div>
+                        <span class="progress-text" id="progressText">0%</span>
+                    </div>
+
+                    <div class="progress-steps">
+                        <div class="step" id="step-initialization">
+                            <i class="fas fa-cog"></i>
+                            <span>Initialization</span>
+                        </div>
+                        <div class="step" id="step-transcription">
+                            <i class="fas fa-microphone"></i>
+                            <span>Transcription</span>
+                        </div>
+                        <div class="step" id="step-analysis">
+                            <i class="fas fa-brain"></i>
+                            <span>AI Analysis</span>
+                        </div>
+                        <div class="step" id="step-processing">
+                            <i class="fas fa-video"></i>
+                            <span>Video Processing</span>
+                        </div>
+                        <div class="step" id="step-completion">
+                            <i class="fas fa-check"></i>
+                            <span>Completion</span>
+                        </div>
+                    </div>
+
+                    <div class="current-status" id="currentStatus">
+                        <p>Preparing to start...</p>
+                    </div>
+
+                    <div class="estimated-time">
+                        <i class="fas fa-clock"></i>
+                        <span>This may take 2-5 minutes depending on video length</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Results Section -->
+            <section class="results-section" id="resultsSection" style="display: none;">
+                <div class="results-container">
+                    <h2><i class="fas fa-check-circle"></i> Your Shorts Are Ready!</h2>
+                    
+                    <div class="results-grid" id="resultsGrid">
+                        <!-- Results will be populated by JavaScript -->
+                    </div>
+
+                    <div class="action-buttons">
+                        <button class="btn-secondary" id="newVideoBtn">
+                            <i class="fas fa-plus"></i>
+                            Generate From New Video
+                        </button>
+                        <button class="btn-primary" id="downloadAllBtn">
+                            <i class="fas fa-download"></i>
+                            Download All Shorts
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Error Section -->
+            <section class="error-section" id="errorSection" style="display: none;">
+                <div class="error-container">
+                    <div class="error-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <h2>Oops! Something went wrong</h2>
+                    <div class="error-message" id="errorMessage">
+                        <!-- Error message will be populated by JavaScript -->
+                    </div>
+                    <button class="btn-primary" id="retryBtn">
+                        <i class="fas fa-redo"></i>
+                        Try Again
+                    </button>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <div class="footer-content">
+                <p>&copy; 2025 AI Short-Form Content Generator. Built with ❤️ and AI.</p>
+                <div class="footer-links">
+                    <a href="#"><i class="fab fa-github"></i> GitHub</a>
+                    <a href="#"><i class="fas fa-book"></i> Docs</a>
+                    <a href="#"><i class="fas fa-question-circle"></i> Help</a>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Processing...</p>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>

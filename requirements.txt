@@ -1,0 +1,30 @@
+# Flask Web Application Dependencies
+
+# Core Flask
+Flask==2.3.3
+Flask-SocketIO==5.3.6
+python-socketio==5.9.0
+
+# CORS support
+Flask-CORS==4.0.0
+
+# File handling
+Werkzeug==2.3.7
+
+# AI and Video Processing (from original project)
+openai>=1.0.0
+openai-whisper>=20231117
+moviepy>=1.0.3
+opencv-python>=4.8.0
+Pillow>=9.0.0
+numpy==1.24.3
+
+# Additional Dependencies
+python-dotenv>=1.0.0
+requests>=2.31.0
+
+# Optional but recommended
+auto-editor>=24.0.0
+
+# Web server for production
+gunicorn==21.2.0
