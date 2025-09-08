@@ -73,6 +73,26 @@ Ready for deployment on platforms like:
 - Digital Ocean
 - AWS EC2
 
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/amazing-feature`
+3. Commit your changes: `git commit -m 'Add amazing feature'`
+4. Push to the branch: `git push origin feature/amazing-feature`
+5. Open a Pull Request
+
+## 🆘 Support & Issues
+
+- 🐛 **Bug Reports**: [Create an Issue](https://github.com/Subh-kami/ai-short-form-generator/issues)
+- 💡 **Feature Requests**: [Start a Discussion](https://github.com/Subh-kami/ai-short-form-generator/discussions)
+- 📧 **Contact**: mrsubhanshud12@gmail.com
+
 ## License
 
-Open source - feel free to modify and distribute.
+MIT License - See [LICENSE](LICENSE) file for details.
+
+---
+
+⭐ **If you find this project useful, please give it a star!**
+
+Made with ❤️ by [Subh-kami](https://github.com/Subh-kami)
